@@ -67,7 +67,7 @@ with col1:
 
 with col2:
     if analyze_btn:
-        model = genai.GenerativeModel'gemini-1.5-pro', system_instruction=SYSTEM_PROMPT)
+        model = genai.GenerativeModel('gemini-1.5-pro', system_instruction=SYSTEM_PROMPT)
         
         try:
             with st.spinner("Profesör parşömenleri inceliyor..."):
