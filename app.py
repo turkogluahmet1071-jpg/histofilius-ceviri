@@ -19,7 +19,7 @@ st.markdown("""
     h1, h2, h3 { color: #1a2a44; font-family: 'serif'; }
     .sidebar .sidebar-content { background-color: #1a2a44; color: #e5d5b0; }
     </style>
-    """, unsafe_allow_index=True)
+    """, unsafe_allow_html=True)
 
 # --- SİSTEM KOMUTU (Senin React kodundaki profesör) ---
 SYSTEM_PROMPT = """
