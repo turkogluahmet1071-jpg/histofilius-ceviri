@@ -37,8 +37,8 @@ Dilin ağırbaşlı, akademik ama merak uyandırıcı olsun.
 """
 
 # --- UI BAŞLIK ---
-st.markdown("<h1 style='text-align: center;'>🏛️ EPIGRAPHOS</h1>", unsafe_allow_index=True)
-st.markdown("<p style='text-align: center; font-style: italic;'>Antik Yunan Yazıt Analiz Laboratuvarı</p>", unsafe_allow_index=True)
+st.markdown("<h1 style='text-align: center;'>🏛️ EPIGRAPHOS</h1>", unsafe_allow_html=True)
+st.markdown("<p style='text-align: center; font-style: italic;'>Antik Yunan Yazıt Analiz Laboratuvarı</p>", unsafe_allow_html=True)
 st.divider()
 
 # --- SIDEBAR (Rehber Bölümü) ---
