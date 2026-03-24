@@ -136,35 +136,11 @@ if st.button("ANALİZİ BAŞLAT", use_container_width=True):
                     st.markdown("### 📜 Profesörün Notları")
                     st.info(response.text)
                     
-                except Exception as e:
+                   except Exception as e:
                     if "429" in str(e):
                         st.error("⚠️ Gemini 2.0 şu an çok yoğun. Lütfen 1 dakika bekleyip tekrar deneyin.")
                     else:
                         st.error(f"Teknik bir durum: {e}")
         else:
-            st.warning("Lütfen analiz edilecek bir metin girin.")
+            st.warning("Lütfen analiz edilecek bir metin girin.") 
                 
-                response = model.generate_content(prompt)
-                
-                st.success("Analiz Tamamlandı!")
-                st.markdown("### 📜 Profesörün Notları")
-                st.info(response.text) 
-                
-            except Exception as e:
-                if "429" in str(e):
-                    st.error("⚠️ Kota doldu. 1 dakika sonra tekrar deneyin.")
-                else:
-                    st.error(f"Teknik bir durum: {e}")
-                
-            except Exception as e:
-                if "429" in str(e):
-                    st.error("⚠️ Google Ücretsiz Kotası Doldu. Lütfen 1-2 dakika bekleyip tekrar deneyin. (Profesör çay molasında ☕)")
-                else:
-                    st.error(f"Teknik bir aksaklık: {e}")
-    else:
-        st.warning("Lütfen analiz edilecek bir metin girin.")
-
-                    
-
-# 🏷️ FOOTER
-st.markdown("<p style='text-align: center; color: gray; margin-top: 50px;'>Histofilius Digital Heritage Project © 2026</p>", unsafe_allow_html=True)
