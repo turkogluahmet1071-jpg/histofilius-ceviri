@@ -113,37 +113,30 @@ st.markdown("---")
 # ✍️ ANALİZ ALANI
 st.subheader("🖋️ Analiz Edilecek Metni Girin")
 input_text = st.text_area("", placeholder="Analiz edilecek yazıtı buraya yapıştırın...", height=150)
-
 if st.button("ANALİZİ BAŞLAT", use_container_width=True):
     if input_text:
-        with st.spinner("Profesör metni inceliyor... 🏛️"):
-            # 🔄 MODEL DENEME DÖNGÜSÜ (FALLBACK SYSTEM)
-            success = False
-            # Denenecek modeller: En yeniden en stabil olana doğru
-            models_to_try = [
-                "gemini-2.0-flash-lite-preview-02-05", # En yeni hafif model
-                "gemini-1.5-flash-latest",            # En stabil emektar
-                "gemini-1.5-flash"                    # Yedek kuvvet
-            ]
-            
-            for model_name in models_to_try:
-                try:
-                    model = genai.GenerativeModel(model_name)
-                    prompt = f"Sen uzman bir epigrafistsin. Şu antik metni akademik bir titizlikle analiz et ve Türkçe sonuç ver: {input_text}"
-                    response = model.generate_content(prompt)
+        with st.spinner("Profesör kütüphaneden geliyor... 🏛️"):
+            try:
+                # 🛡️ EN STABİL VE KOTASI GENİŞ MODEL: 1.5 FLASH
+                model = genai.GenerativeModel('gemini-1.5-flash')
+                
+                # Akademik bir prompt ile profesörü tetikliyoruz
+                prompt = f"Sen uzman bir epigrafistsin. Şu antik metni akademik bir titizlikle analiz et ve Türkçe sonuç ver: {input_text}"
+                response = model.generate_content(prompt)
+                
+                st.success("Analiz Tamamlandı!")
+                st.markdown("### 📜 Analiz Sonuçları")
+                st.write(response.text)
+                
+            except Exception as e:
+                if "429" in str(e):
+                    st.error("⚠️ Google Ücretsiz Kotası Doldu. Lütfen 1-2 dakika bekleyip tekrar deneyin. (Profesör çay molasında ☕)")
+                else:
+                    st.error(f"Teknik bir aksaklık: {e}")
+    else:
+        st.warning("Lütfen analiz edilecek bir metin girin.")
+
                     
-                    # Eğer buraya kadar geldiyse analiz başarılıdır!
-                    st.success(f"Analiz Tamamlandı! (Model: {model_name})")
-                    st.markdown("### 📜 Analiz Sonuçları")
-                    st.write(response.text)
-                    success = True
-                    break # Başarılı olduğu için döngüden çık
-                except Exception as e:
-                    # Bu model hata verdiyse bir sonrakini dene
-                    continue
-            
-            if not success:
-                st.error("⚠️ Tüm profesörler şu an meşgul (Kota Dolu). Lütfen 1 dakika sonra tekrar deneyin.")
 
 # 🏷️ FOOTER
 st.markdown("<p style='text-align: center; color: gray; margin-top: 50px;'>Histofilius Digital Heritage Project © 2026</p>", unsafe_allow_html=True)
