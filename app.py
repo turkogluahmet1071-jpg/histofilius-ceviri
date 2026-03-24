@@ -117,16 +117,30 @@ if st.button("ANALİZİ BAŞLAT", use_container_width=True):
     if input_text:
         with st.spinner("Profesör kütüphaneden geliyor... 🏛️"):
             try:
-                # 🛡️ EN STABİL VE KOTASI GENİŞ MODEL: 1.5 FLASH
-                model = genai.GenerativeModel('gemini-1.5-flash')
+                # Modeli 'models/' ön ekiyle çağırıyoruz ki v1beta hatası sussun
+                model = genai.GenerativeModel('models/gemini-1.5-flash-latest')
                 
-                # Akademik bir prompt ile profesörü tetikliyoruz
-                prompt = f"Sen uzman bir epigrafistsin. Şu antik metni akademik bir titizlikle analiz et ve Türkçe sonuç ver: {input_text}"
+                prompt = f"""
+                Sen uzman bir epigrafistsin. Aşağıdaki antik metni analiz et:
+                Metin: {input_text}
+                
+                Lütfen şu formatta cevap ver:
+                1. Transkripsiyon (Grekçe/Latince)
+                2. Türkçe Çeviri
+                3. Tarihsel ve Epigrafik Yorum
+                """
+                
                 response = model.generate_content(prompt)
                 
                 st.success("Analiz Tamamlandı!")
-                st.markdown("### 📜 Analiz Sonuçları")
-                st.write(response.text)
+                st.markdown("### 📜 Profesörün Notları")
+                st.info(response.text) 
+                
+            except Exception as e:
+                if "429" in str(e):
+                    st.error("⚠️ Kota doldu. 1 dakika sonra tekrar deneyin.")
+                else:
+                    st.error(f"Teknik bir durum: {e}")
                 
             except Exception as e:
                 if "429" in str(e):
