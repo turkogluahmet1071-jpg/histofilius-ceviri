@@ -5,7 +5,7 @@ import google.generativeai as genai
 st.set_page_config(page_title="EPIGRAPHOS | Antik Yazıt Analiz Laboratuvarı", page_icon="📜", layout="wide")
 
 # API Yapılandırması (Lütfen anahtarın tırnak içinde olduğundan emin ol)
-API_KEY = "API_KEY = st.secrets["GEMINI_API_KEY"]"
+API_KEY = "API_KEY = st.secrets["GEMINI_API_KEY"]
 genai.configure(api_key=API_KEY)
 
 # 🎨 AKADEMİK VE PROFESYONEL TASARIM (CSS)
