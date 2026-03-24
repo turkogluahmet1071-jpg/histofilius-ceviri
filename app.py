@@ -1,12 +1,17 @@
 import streamlit as st
+import google.generativeai as genai
 
 # Sayfa Ayarları
 st.set_page_config(page_title="EPIGRAPHOS | Antik Yazıt Analiz Laboratuvarı", page_icon="📜", layout="wide")
 
-# 🎨 AKADEMİK TASARIM (CSS)
+# API Yapılandırması (Lütfen anahtarın tırnak içinde olduğundan emin ol)
+API_KEY = "AIzaSyBpuXwhUlhXcRd4eZ9Sp4uIL4LKfYsN8pg"
+genai.configure(api_key=API_KEY)
+
+# 🎨 AKADEMİK VE PROFESYONEL TASARIM (CSS)
 st.markdown("""
     <style>
-    /* Üst Başlık Bandı (Lacivert) */
+    /* Üst Lacivert Band */
     .header-band {
         background-color: #1a2a3a;
         padding: 30px;
@@ -17,26 +22,11 @@ st.markdown("""
         align-items: center;
         margin-bottom: 30px;
     }
-    .header-title {
-        font-family: 'Georgia', serif;
-        font-size: 42px;
-        letter-spacing: 2px;
-        margin: 0;
-    }
-    .header-subtitle {
-        font-size: 14px;
-        letter-spacing: 3px;
-        color: #bdc3c7;
-        text-transform: uppercase;
-    }
-    .quote-section {
-        text-align: right;
-        font-style: italic;
-    }
-    .quote-text { font-size: 18px; color: #f1c40f; }
-    .quote-source { font-size: 12px; color: #bdc3c7; }
+    .header-title { font-family: 'Georgia', serif; font-size: 42px; letter-spacing: 2px; margin: 0; }
+    .header-subtitle { font-size: 14px; letter-spacing: 3px; color: #bdc3c7; text-transform: uppercase; }
+    .quote-text { font-size: 18px; color: #f1c40f; font-style: italic; }
 
-    /* Kart Tasarımları (Metodoloji ve Sıkça Kullanılanlar) */
+    /* Kartlar */
     .info-card {
         background-color: white;
         padding: 25px;
@@ -44,46 +34,53 @@ st.markdown("""
         border-left: 5px solid #1a2a3a;
         box-shadow: 0 4px 6px rgba(0,0,0,0.1);
         margin-bottom: 20px;
+        height: 200px;
     }
-    .card-title {
-        color: #1a2a3a;
-        font-family: 'Georgia', serif;
-        font-size: 22px;
-        margin-bottom: 15px;
-        border-bottom: 1px solid #eee;
+    .card-title { color: #1a2a3a; font-family: 'Georgia', serif; font-size: 22px; margin-bottom: 15px; border-bottom: 1px solid #eee; }
+
+    /* Spotify Butonu Özelleştirme */
+    .spotify-btn {
+        background-color: #1DB954;
+        color: white !important;
+        padding: 15px 25px;
+        text-decoration: none;
+        border-radius: 30px;
+        font-weight: bold;
+        display: inline-flex;
+        align-items: center;
+        gap: 10px;
+        margin-top: 20px;
+        transition: 0.3s;
     }
-    
-    /* Metin Alanı Özelleştirme */
-    .stTextArea>div>div>textarea {
-        background-color: #fdfcf9;
-        border: 1px solid #d1d1d1;
-    }
+    .spotify-btn:hover { background-color: #1ed760; transform: scale(1.05); }
+
+    /* Metin Alanı */
+    .stTextArea>div>div>textarea { background-color: #fdfcf9; border: 1px solid #d1d1d1; font-size: 1.1em; }
     </style>
     """, unsafe_allow_html=True)
 
-# 🏛️ ÜST BANDI OLUŞTUR
+# 🏛️ ÜST BAND
 st.markdown("""
     <div class="header-band">
         <div>
             <h1 class="header-title">EPIGRAPHOS</h1>
             <p class="header-subtitle">ANTİK YUNAN YAZIT ANALİZ LABORATUVARI</p>
         </div>
-        <div class="quote-section">
+        <div style="text-align: right;">
             <p class="quote-text">"Scripta manent, verba volant."</p>
-            <p class="quote-source">Oxford Classics / Epigraphy Dept.</p>
+            <p style="font-size: 12px; color: #bdc3c7;">Oxford Classics / Epigraphy Dept.</p>
         </div>
     </div>
     """, unsafe_allow_html=True)
 
-# 📜 ANA İÇERİK (SOL VE SAĞ KOLON)
-col1, col2 = st.columns([1, 1])
+# 📜 BİLGİ KARTLARI VE SPOTIFY
+col1, col2, col3 = st.columns([1, 1, 1])
 
 with col1:
-    # 🛠️ METODOLOJİ BÖLÜMÜ
     st.markdown("""
         <div class="info-card">
             <div class="card-title">⚒️ Metodoloji</div>
-            <ul style="list-style-type: none; padding-left: 0;">
+            <ul style="list-style-type: none; padding-left: 0; font-size: 0.9em;">
                 <li>> Leiden Konvansiyonu kullanımı</li>
                 <li>> Paleografik karşılaştırma</li>
                 <li>> Onomastik veritabanı taraması</li>
@@ -92,14 +89,22 @@ with col1:
         """, unsafe_allow_html=True)
 
 with col2:
-    # 📖 SIKÇA KULLANILANLAR BÖLÜMÜ
     st.markdown("""
         <div class="info-card">
             <div class="card-title">📖 Sıkça Kullanılanlar</div>
-            <p style="color: #2980b9; font-weight: bold; margin-bottom: 5px;">MEZAR YAZITLARI</p>
-            <code style="background-color: #f4f4f4; padding: 5px; border-radius: 5px; display: block;">
-                ΕΝΘΑΔΕ ΚΕΙΤΑΙ (Burada yatıyor...)
-            </code>
+            <p style="color: #2980b9; font-weight: bold; font-size: 0.8em; margin-bottom: 5px;">MEZAR YAZITLARI</p>
+            <code style="display: block; background: #f4f4f4; padding: 5px; font-size: 0.8em;">ΕΝΘΑΔΕ ΚΕΙΤΑΙ (Burada yatıyor...)</code>
+        </div>
+        """, unsafe_allow_html=True)
+
+with col3:
+    st.markdown("""
+        <div class="info-card" style="text-align: center; border-left: 5px solid #1DB954;">
+            <div class="card-title" style="color: #1DB954;">🎙️ Podcast</div>
+            <p style="font-size: 0.9em;">Geç Cumhuriyet Dönemi'ni keşfedin.</p>
+            <a href="https://open.spotify.com/show/5R1Y05N92i8U2W6YI8vVzG" target="_blank" class="spotify-btn">
+                <span>Spotify'da Dinle</span>
+            </a>
         </div>
         """, unsafe_allow_html=True)
 
@@ -107,13 +112,25 @@ st.markdown("---")
 
 # ✍️ ANALİZ ALANI
 st.subheader("🖋️ Analiz Edilecek Metni Girin")
-input_text = st.text_area("", placeholder="Örn: ΣΩΚΡΑΤΗΣ ΕΝ ΑΘΗΝΑΙΣ", height=120)
+input_text = st.text_area("", placeholder="Analiz edilecek yazıtı buraya yapıştırın...", height=150)
 
-if st.button("ANALİZİ BAŞLAT"):
+if st.button("ANALİZİ BAŞLAT", use_container_width=True):
     if input_text:
-        st.info("⚠️ Profesör şu an kütüphanede (Gemini 404). Akademik arayüz başarıyla yüklendi!")
+        with st.spinner("Profesör metni inceliyor, lütfen bekleyin... 🏛️"):
+            try:
+                # 404 hatasını önlemek için stabil model seçimi
+                model = genai.GenerativeModel('gemini-1.5-flash')
+                prompt = f"Sen uzman bir epigrafistsin. Şu antik metni akademik bir titizlikle analiz et ve Türkçe sonuç ver: {input_text}"
+                response = model.generate_content(prompt)
+                
+                st.success("Analiz Tamamlandı!")
+                st.markdown("### 📜 Analiz Sonuçları")
+                st.write(response.text)
+            except Exception as e:
+                st.error(f"Teknik bir aksaklık: {e}")
+                st.info("İpucu: Eğer 404 hatası alırsanız, Streamlit üzerinden 'Reboot App' yapmayı unutmayın.")
     else:
-        st.warning("Lütfen bir metin girin.")
+        st.warning("Lütfen analiz için bir metin girin.")
 
 # 🏷️ FOOTER
-st.markdown("<p style='text-align: center; color: gray; margin-top: 50px;'>Histofilius Digital Heritage Project © 2026</p>", unsafe_allow_html=True)            
+st.markdown("<p style='text-align: center; color: gray; margin-top: 50px;'>Histofilius Digital Heritage Project © 2026</p>", unsafe_allow_html=True)
