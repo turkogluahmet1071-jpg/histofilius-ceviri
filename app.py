@@ -114,21 +114,35 @@ st.markdown("---")
 st.subheader("🖋️ Analiz Edilecek Metni Girin")
 input_text = st.text_area("", placeholder="Analiz edilecek yazıtı buraya yapıştırın...", height=150)
 if st.button("ANALİZİ BAŞLAT", use_container_width=True):
-    if input_text:
-        with st.spinner("Profesör kütüphaneden geliyor... 🏛️"):
-            try:
-                # Modeli 'models/' ön ekiyle çağırıyoruz ki v1beta hatası sussun
-                model = genai.GenerativeModel('models/gemini-1.5-flash-latest')
-                
-                prompt = f"""
-                Sen uzman bir epigrafistsin. Aşağıdaki antik metni analiz et:
-                Metin: {input_text}
-                
-                Lütfen şu formatta cevap ver:
-                1. Transkripsiyon (Grekçe/Latince)
-                2. Türkçe Çeviri
-                3. Tarihsel ve Epigrafik Yorum
-                """
+        if input_text:
+            with st.spinner("Profesör Gemini 2.0 kütüphaneden geliyor... 🏛️"):
+                try:
+                    # En güncel ve zeki modelimiz
+                    model = genai.GenerativeModel('gemini-2.0-flash')
+                    
+                    prompt = f"""
+                    Sen uzman bir epigrafistsin. Aşağıdaki antik metni akademik bir titizlikle analiz et:
+                    Metin: {input_text}
+                    
+                    Lütfen şu formatta cevap ver:
+                    1. Transkripsiyon (Grekçe/Latince)
+                    2. Türkçe Çeviri
+                    3. Tarihsel ve Epigrafik Yorum
+                    """
+                    
+                    response = model.generate_content(prompt)
+                    
+                    st.success("Analiz Tamamlandı! (Gemini 2.0)")
+                    st.markdown("### 📜 Profesörün Notları")
+                    st.info(response.text)
+                    
+                except Exception as e:
+                    if "429" in str(e):
+                        st.error("⚠️ Gemini 2.0 şu an çok yoğun. Lütfen 1 dakika bekleyip tekrar deneyin.")
+                    else:
+                        st.error(f"Teknik bir durum: {e}")
+        else:
+            st.warning("Lütfen analiz edilecek bir metin girin.")
                 
                 response = model.generate_content(prompt)
                 
