@@ -119,7 +119,7 @@ if st.button("ANALİZİ BAŞLAT", use_container_width=True):
         with st.spinner("Profesör metni inceliyor, lütfen bekleyin... 🏛️"):
             try:
                 # 404 hatasını önlemek için stabil model seçimi
-                model = genai.GenerativeModel('gemini-1.5-flash')
+                model = genai.GenerativeModel('gemini-2.0-flash')
                 prompt = f"Sen uzman bir epigrafistsin. Şu antik metni akademik bir titizlikle analiz et ve Türkçe sonuç ver: {input_text}"
                 response = model.generate_content(prompt)
                 
